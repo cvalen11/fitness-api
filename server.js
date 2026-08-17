@@ -26,17 +26,18 @@ app.get('/health', async (req, res) => {
 app.get('/schema', async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT table_name, column_name, data_type
+      SELECT table_schema, table_name, column_name, data_type
       FROM information_schema.columns
-      WHERE table_schema = 'public'
-      ORDER BY table_name, ordinal_position
+      WHERE table_schema IN ('pkof29ltve6nrv9', 'p5r3liuilkd2raq')
+      ORDER BY table_schema, table_name, ordinal_position
     `);
-    const tables = {};
+    const schemas = {};
     for (const row of result.rows) {
-      if (!tables[row.table_name]) tables[row.table_name] = [];
-      tables[row.table_name].push(`${row.column_name} (${row.data_type})`);
+      const key = `${row.table_schema}.${row.table_name}`;
+      if (!schemas[key]) schemas[key] = [];
+      schemas[key].push(`${row.column_name} (${row.data_type})`);
     }
-    res.json(tables);
+    res.json(schemas);
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });
   }
