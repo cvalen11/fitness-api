@@ -6,7 +6,7 @@ services:
     container_name: fitness_api
     restart: unless-stopped
     networks:
-      - fitness_network
+      - fitness-tracker_fitness_network
     environment:
       PGHOST: fitness_db
       PGPORT: 5432
@@ -17,5 +17,5 @@ services:
       - "8082:3000"
 
 networks:
-  fitness_network:
+  fitness-tracker_fitness_network:
     external: true
