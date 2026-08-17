@@ -42,5 +42,23 @@ app.get('/schema', async (req, res) => {
   }
 });
 
+app.get('/databases', async (req, res) => {
+  try {
+    const result = await pool.query(`SELECT datname FROM pg_database WHERE datistemplate = false`);
+    res.json(result.rows.map(r => r.datname));
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+app.get('/schemas', async (req, res) => {
+  try {
+    const result = await pool.query(`SELECT schema_name FROM information_schema.schemata`);
+    res.json(result.rows.map(r => r.schema_name));
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API listening on ${PORT}`));
